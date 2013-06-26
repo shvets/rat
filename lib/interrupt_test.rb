@@ -1,0 +1,1 @@
+BEGIN { Signal.trap('INT') { puts "Test is interrupted..."; Kernel.exit! } }

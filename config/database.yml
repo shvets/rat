@@ -1,0 +1,88 @@
+# SQLite version 3.x
+#   gem 'activerecord-jdbcsqlite3-adapter'
+#
+# Configure Using Gemfile
+# gem 'activerecord-jdbcsqlite3-adapter'
+#
+
+<% if RUBY_PLATFORM != "java" %>
+
+development:
+  adapter: postgresql
+  database: rails_app_tmpl_dev
+  username: rails_app_tmpl
+  password: rails_app_tmpl
+  host: 127.0.0.1
+
+#  adapter: mysql
+#  database: rails_app_tmpl_dev
+#  username: root
+#  password: root
+
+# Warning: The database defined as "test" will be erased and
+# re-generated from your development database when you run "rake".
+# Do not set this db to the same as development or production.
+test:
+  adapter: sqlite3
+  database: db/test.sqlite3
+
+staging:
+  adapter: mysql
+  database: rails_app_tmpl_test
+  username: root
+  password: root
+
+production:
+  adapter: oracle_enhanced
+  credentials: rails_app_tmpl
+
+<% else %>
+
+development:
+  adapter: jdbc
+  driver: postgresql
+  jndi: java:comp/env/jdbc/rails_app_tmpl_postgres
+  host: 127.0.0.1
+
+#  adapter: jdbc
+#  driver: mysql
+#  jndi: java:comp/env/jdbc/rails_app_tmpl_mysql
+#  host: 127.0.0.1
+
+#  credentials: rails_app_tmpl_postgres
+#  jndi: "jdbc/rails_app_tmpl_development"
+
+
+
+
+# Warning: The database defined as "test" will be erased and
+# re-generated from your development database when you run "rake".
+# Do not set this db to the same as development or production.
+test:
+  adapter: jdbcsqlite3
+  database: db/test.sqlite3
+
+staging:
+  adapter: jdbcmysql
+  database: rails_app_tmpl_test
+  username: rails_app_tmpl
+  password:
+
+production:
+#  adapter: oracle_enhanced
+#  credentials: rails_app_tmpl_oracle_url
+#  jndi: "jdbc/rails_app_tmpl_production"
+
+  #adapter: jdbc
+
+
+  adapter: oracle_enhanced
+  credentials: rails_app_tmpl_oracle_url
+#  jndi: jdbc/rails_app_tmpl_production
+  driver: oracle.jdbc.driver.OracleDriver
+  <%=
+    file = File.join(Rails.root, "config", "oracle_jndi.yml")
+    IO.read(file) if File.exist?(file)
+  %>
+
+<% end %>

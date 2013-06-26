@@ -1,0 +1,1 @@
+jndi: <%= config[:jndi_resource_name] %>

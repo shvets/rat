@@ -1,0 +1,13 @@
+# encoding: utf-8
+#!/usr/bin/env ruby
+#^syntax detection
+
+site 'http://community.opscode.com/api/v1'
+
+cookbook 'apt'
+cookbook 'git'
+
+cookbook 'mysql'
+cookbook 'postgresql'
+
+#cookbook 'rvm'

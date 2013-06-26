@@ -1,0 +1,3 @@
+#!/bin/sh
+
+rdebug-ide --port 1234 -- $*

@@ -1,0 +1,56 @@
+1. Install postgres.
+
+2. Create user and databases for postgres:
+
+createuser -s -d -r rails_app_tmpl
+
+createdb -U rails_app_tmpl rails_app_tmpl_dev
+createdb -U rails_app_tmpl rails_app_tmpl_test
+createdb -U rails_app_tmpl rails_app_tmpl_prod
+
+ENCODING_STRING="WITH ENCODING = 'UTF-8' LC_CTYPE = 'en_US.utf8' LC_COLLATE = 'en_US.utf8' OWNER $POSTGRES_USER TEMPLATE template0"
+
+sudo -u postgres psql -c "CREATE DATABASE $DEV_DB_SCHEMA $ENCODING_STRING"
+sudo -u postgres psql -c "GRANT ALL PRIVILEGES ON DATABASE $DEV_DB_SCHEMA to $APP_USER"
+
+sudo -u postgres psql -c "CREATE DATABASE $TEST_DB_SCHEMA $ENCODING_STRING"
+sudo -u postgres psql -c "GRANT ALL PRIVILEGES ON DATABASE $TEST_DB_SCHEMA to $APP_USER"
+
+sudo -u postgres psql -c "CREATE DATABASE $PROD_DB_SCHEMA $ENCODING_STRING"
+sudo -u postgres psql -c "GRANT ALL PRIVILEGES ON DATABASE $PROD_DB_SCHEMA to $APP_USER"
+
+
+3. Install mysql.
+
+4. Create user and databases for mysql:
+
+mysql -u root -p'root'
+
+CREATE USER 'rails_app_tmpl'@'localhost' IDENTIFIED BY 'rails_app_tmpl';
+grant all privileges on *.* to 'rails_app_tmpl'@'localhost' identified by 'rails_app_tmpl' with grant option;
+grant all privileges on *.* to 'rails_app_tmpl'@'%' identified by 'rails_app_tmpl' with grant option;
+create database rails_app_tmpl_dev;
+create database rails_app_tmpl_test;
+create database rails_app_tmpl_prod;
+
+exit;
+
+
+
+MYSQL_USER='root'
+MYSQL_PASSWORD='root'
+
+APP_USER='rails_app_tmpl'
+
+TEST_DB_SCHEMA='rails_app_tmpl_test'
+DEV_DB_SCHEMA='rails_app_tmpl_dev'
+PROD_DB_SCHEMA='rails_app_tmpl_prod'
+
+mysql -h localhost -u $MYSQL_USER -p"$MYSQL_PASSWORD" -e "CREATE USER '$APP_USER'@'localhost' IDENTIFIED BY '$APP_USER';"
+
+mysql -h localhost -u $MYSQL_USER -p"$MYSQL_PASSWORD" -e "grant all privileges on *.* to '$APP_USER'@'localhost' identified by '$APP_USER' with grant option;"
+mysql -h localhost -u $MYSQL_USER -p"$MYSQL_PASSWORD" -e "grant all privileges on *.* to '$APP_USER'@'%' identified by '$APP_USER' with grant option;"
+
+mysql -h localhost -u $MYSQL_USER -p"$MYSQL_PASSWORD" -e "create database $TEST_DB_SCHEMA;"
+mysql -h localhost -u $MYSQL_USER -p"$MYSQL_PASSWORD" -e "create database $DEV_DB_SCHEMA;"
+mysql -h localhost -u $MYSQL_USER -p"$MYSQL_PASSWORD" -e "create database $PROD_DB_SCHEMA;"

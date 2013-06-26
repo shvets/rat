@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Context>
+  <!-- Specify a JDBC datasource -->
+
+  <Resource name="jdbc/<%= config[:postgres][:jndi_name] %>" auth="Container" type="javax.sql.DataSource"
+            maxActive="100" maxIdle="30" maxWait="10000"
+            username="<%= config[:postgres][:username] %>" password="<%= config[:postgres][:password] %>"
+            driverClassName="org.postgresql.Driver"
+            url="<%= config[:postgres][:url] %>"/>
+
+  <Resource name="jdbc/<%= config[:mysql][:jndi_name] %>" auth="Container" type="javax.sql.DataSource"
+            maxActive="100" maxIdle="30" maxWait="10000"
+            username="<%= config[:mysql][:username] %>" password="<%= config[:mysql][:password] %>"
+            driverClassName="com.mysql.jdbc.Driver"
+            url="<%= config[:mysql][:url] %>"/>
+</Context>
+
