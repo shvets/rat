@@ -31,10 +31,10 @@ class Macbook < Thor
 
   def server_info
     @server_info ||= {
-      :remote => (config[:host] == 'localhost') ? false : true,
+      :remote => localhost? ? false : true,
       :domain => config[:host],
       :user =>  config[:user],
-      :password => (config[:host] == 'localhost') ? "" : ask_password(config[:user])
+      :password => localhost? ? "" : ask_password(config[:user])
     }
   end
 
@@ -94,9 +94,15 @@ class Macbook < Thor
 
     run("mysql", binding, installed)
   end
+  # brew uninstall mysql
 
   desc "mysql_restart", "Restarts mysql server"
   def mysql_restart
+    #key = "homebrew.mxcl.mysql"
+    #
+    #if
+    ##if [ launchctl list | grep homebrew.mxcl.postgresql -s "homebrew.mxcl.postgresql" ]
+
     run("mysql_restart", binding)
   end
 
@@ -239,7 +245,7 @@ class Macbook < Thor
   end
 
   def drop_postgres_user app_user, schema
-    execute(server_info) { "dropuser #{app_user}" }
+    execute(server_info) { "/usr/local/bin/dropuser #{app_user}" }
   end
 
   def create_postgres_schema app_user, schema
@@ -250,7 +256,7 @@ class Macbook < Thor
   end
 
   def drop_postgres_schema schema
-    execute(server_info) { "dropdb #{schema}" }
+    execute(server_info) { "/usr/local/bin/dropdb #{schema}" }
   end
 
 end
@@ -295,8 +301,10 @@ mysqladmin -u root password 'root'
 launchctl unload ~/Library/LaunchAgents/homebrew.mxcl.mysql.plist
 launchctl load ~/Library/LaunchAgents/homebrew.mxcl.mysql.plist
 
+
 [create_mysql_user]
 source ~/.rvm/scripts/rvm
+source ~/.bash_profile
 
 APP_USER='<%= app_user %>'
 HOSTNAME='<%= config[:mysql][:hostname] %>'
@@ -312,6 +320,7 @@ mysql -h $HOSTNAME -u root -p"root" -e "grant all privileges on *.* to '$APP_USE
 
 [create_mysql_schema]
 source ~/.rvm/scripts/rvm
+source ~/.bash_profile
 
 SCHEMA='<%= schema %>'
 HOSTNAME='<%= config[:mysql][:hostname] %>'
@@ -338,6 +347,7 @@ launchctl load -w ~/Library/LaunchAgents/homebrew.mxcl.postgresql.plist
 
 [create_postgres_user]
 source ~/.rvm/scripts/rvm
+source ~/.bash_profile
 
 APP_USER='<%= app_user %>'
 
@@ -346,6 +356,7 @@ createuser -s -d -r $APP_USER
 
 [create_postgres_schema]
 source ~/.rvm/scripts/rvm
+source ~/.bash_profile
 
 APP_USER='<%= app_user %>'
 SCHEMA='<%= schema %>'
