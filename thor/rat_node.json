@@ -1,0 +1,11 @@
+{
+  "host": "localhost",
+  "user": "ENV['USER']",
+  "home": "ENV['HOME']",
+  "mysql": {
+    "hostname": "localhost", "user": "root", "password": "root"
+  },
+  "postgres": {
+    "hostname": "localhost", "user": "rails_app_tmpl", "password": "rails_app_tmpl"
+  }
+}
