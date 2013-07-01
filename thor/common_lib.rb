@@ -5,7 +5,7 @@ module CommonLib
   private
 
   def ask_password user
-    @terminal.ask("Enter password for #{user}:  ") { |q| q.echo = "*" }
+    @terminal.ask("Enter password for #{user}: ") { |q| q.echo = "*" }
   end
 
   def terminal
@@ -34,4 +34,5 @@ module CommonLib
   def localhost? hostname
     ['localhost', get_localhost].include?(hostname)
   end
+
 end

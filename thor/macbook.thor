@@ -3,14 +3,31 @@ Thor::Util.load_thorfile(File.expand_path('macbook_provision.thor', File.dirname
 class Macbook < MacbookProvision
 
   def initialize *args
+    result = super
+
+    @script_list = @script_list.merge(scripts(__FILE__))
+
     @config = read_node("thor/rat_node.json")
 
-    super
+    result
   end
 
   desc "all", "Installs all required packages"
   def all
-    super.all
+    invoke :brew
+    invoke :rvm
+    invoke :qt
+
+    invoke :mysql
+    invoke :mysql_restart
+
+    invoke :postgres
+    invoke :postgres_restart
+
+    invoke :jenkins
+    invoke :jenkins_restart
+
+    invoke :ruby
 
     invoke :mysql_create
     invoke :postgres_create

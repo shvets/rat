@@ -10,22 +10,10 @@ class MacbookProvision < Thor
 
   attr_reader :config, :script_list, :password
 
-  desc "all", "Installs all required packages"
-  def all
-    invoke :brew
-    invoke :rvm
-    invoke :qt
+  def initialize *args
+    @script_list = scripts(__FILE__)
 
-    invoke :mysql
-    invoke :mysql_restart
-
-    invoke :postgres
-    invoke :postgres_restart
-
-    invoke :jenkins
-    invoke :jenkins_restart
-
-    invoke :ruby
+    super
   end
 
   desc "brew", "Installs homebrew"
@@ -37,7 +25,7 @@ class MacbookProvision < Thor
 
   desc "rvm", "Installs rvm"
   def rvm
-    installed = package_installed "#{config[:home]}/.rvm/bin/rvm"
+    installed = package_installed "~/.rvm/bin/rvm"
 
     install("rvm", binding, installed)
   end
@@ -81,7 +69,7 @@ class MacbookProvision < Thor
 
   desc "ruby", "Installs ruby"
   def ruby
-    installed = package_installed "#{config[:home]}/.rvm/rubies/ruby-1.9.3-p429/bin/ruby"
+    installed = package_installed "~/.rvm/rubies/ruby-1.9.3-p429/bin/ruby"
 
     if mountain_lion?
       install("ruby_ml", binding, installed)
@@ -120,29 +108,22 @@ class MacbookProvision < Thor
 
   protected
 
-  def script_list
-    @script_list ||= scripts(__FILE__)
-  end
-
   def password
     @password ||= ask_password(config[:user])
   end
 
   def server_info
     @server_info ||= {
-        #remote: localhost?(config[:host]) ? false : true,
-        remote: true,
-        domain: config[:host],
-        user: config[:user],
-        #password: localhost?(config[:host]) ? "" : ask_password(config[:user])
-        password: "a"
+      remote: localhost?(config[:host]) ? false : true,
+      remote: true,
+      domain: config[:host],
+      user: config[:user],
+      password: localhost?(config[:host]) ? "" : ask_password(config[:user])
     }
   end
 
   def read_node node_name
-    hash = JSON.parse(File.read(node_name))
-
-    hash.default_proc = proc{|h, k| h.key?(k.to_s) ? h[k.to_s] : nil}
+    hash = JSON.parse(File.read(node_name), :symbolize_names => true)
 
     hash.each do |key, value|
       hash[key] = eval value if value =~ /^ENV\[(.*)\]$/
@@ -206,15 +187,13 @@ class MacbookProvision < Thor
   def create_mysql_schema schema
     schema_exists = mysql_schema_exist?(config[:mysql][:hostname], config[:mysql][:user], config[:mysql][:password], schema)
 
-    run("create_mysql_schema", binding)
-    #unless schema_exists
+    run("create_mysql_schema", binding) unless schema_exists
   end
 
   def create_postgres_user app_user, schema
     schema_exists = postgres_schema_exist?(schema)
 
-    run("create_postgres_user", binding)
-    #unless schema_exists
+    run("create_postgres_user", binding) unless schema_exists
   end
 
   def drop_postgres_user app_user, schema
@@ -224,8 +203,7 @@ class MacbookProvision < Thor
   def create_postgres_schema app_user, schema
     schema_exists = postgres_schema_exist?(schema)
 
-    run("create_postgres_schema", binding)
-    #unless schema_exists
+    run("create_postgres_schema", binding) unless schema_exists
   end
 
   def drop_postgres_schema schema
@@ -275,24 +253,26 @@ rm $TEMPFILE
 
 [mysql]
 PATH=$PATH:/usr/local/bin
+USER_HOME="<%=config[:home]%>"
 
 brew install mysql
 
-mkdir -p <%= config[:home] %>/Library/LaunchAgents
+mkdir -p $USER_HOME/Library/LaunchAgents
 
-ln -sfv /usr/local/opt/mysql/*.plist ~/Library/LaunchAgents
+ln -sfv /usr/local/opt/mysql/*.plist $USER_HOME/Library/LaunchAgents
 
 mysqladmin -u root password 'root'
 
 
 [mysql_restart]
 STARTED=<%=started%>
+USER_HOME="<%=config[:home]%>"
 
 if [ "$STARTED" = "true" ] ; then
-  launchctl unload ~/Library/LaunchAgents/homebrew.mxcl.mysql.plist
+  launchctl unload $USER_HOME/Library/LaunchAgents/homebrew.mxcl.mysql.plist
 fi
 
-launchctl load ~/Library/LaunchAgents/homebrew.mxcl.mysql.plist
+launchctl load $USER_HOME/Library/LaunchAgents/homebrew.mxcl.mysql.plist
 
 
 [create_mysql_user]
@@ -323,22 +303,24 @@ mysql -h $HOSTNAME -u root -p"root" -e "create database $SCHEMA;"
 
 [postgres]
 PATH=$PATH:/usr/local/bin
+USER_HOME="<%=config[:home]%>"
 
 brew install postgres
 
-ln -sfv /usr/local/opt/postgresql/homebrew.mxcl.postgresql.plist ~/Library/LaunchAgents
+ln -sfv /usr/local/opt/postgresql/homebrew.mxcl.postgresql.plist $USER_HOME/Library/LaunchAgents
 
 initdb /usr/local/var/postgres -E utf8
 
 
 [postgres_restart]
 STARTED=<%=started%>
+USER_HOME="<%=config[:home]%>"
 
 if [ "$STARTED" = "true" ] ; then
-  launchctl unload -w ~/Library/LaunchAgents/homebrew.mxcl.postgresql.plist
+  launchctl unload -w $USER_HOME/Library/LaunchAgents/homebrew.mxcl.postgresql.plist
 fi
 
-launchctl load -w ~/Library/LaunchAgents/homebrew.mxcl.postgresql.plist
+launchctl load -w $USER_HOME/Library/LaunchAgents/homebrew.mxcl.postgresql.plist
 
 
 [create_postgres_user]
@@ -374,35 +356,39 @@ rvm install 1.9.3  --with-gcc=clang
 
 [jenkins]
 PATH=$PATH:/usr/local/bin
+USER_HOME="<%=config[:home]%>"
 
 brew install jenkins
 
-ln -sfv /usr/local/opt/jenkins/homebrew.mxcl.jenkins.plist ~/Library/LaunchAgents
+ln -sfv /usr/local/opt/jenkins/homebrew.mxcl.jenkins.plist $USER_HOME/Library/LaunchAgents
 
 
 [jenkins_restart]
 STARTED=<%=started%>
+USER_HOME="<%=config[:home]%>"
 
 if [ "$STARTED" = "true" ] ; then
-  launchctl unload ~/Library/LaunchAgents/homebrew.mxcl.jenkins.plist
+  launchctl unload $USER_HOME/Library/LaunchAgents/homebrew.mxcl.jenkins.plist
 fi
 
-launchctl load ~/Library/LaunchAgents/homebrew.mxcl.jenkins.plist
+launchctl load $USER_HOME/Library/LaunchAgents/homebrew.mxcl.jenkins.plist
 
 
 [selenium]
 PATH=$PATH:/usr/local/bin
+USER_HOME="<%=config[:home]%>"
 
 brew install selenium-server-standalone
 
-ln -sfv /usr/local/opt/selenium-server-standalone/*.plist ~/Library/LaunchAgents
+ln -sfv /usr/local/opt/selenium-server-standalone/*.plist $USER_HOME/Library/LaunchAgents
 
 
 [selenium_restart]
 STARTED=<%=started%>
+USER_HOME="<%=config[:home]%>"
 
 if [ "$STARTED" = "true" ] ; then
-  launchctl unload ~/Library/LaunchAgents/homebrew.mxcl.selenium-server-standalone.plist
+  launchctl unload $USER_HOME/Library/LaunchAgents/homebrew.mxcl.selenium-server-standalone.plist
 fi
-launchctl load ~/Library/LaunchAgents/homebrew.mxcl.selenium-server-standalone.plist
+launchctl load $USER_HOME/Library/LaunchAgents/homebrew.mxcl.selenium-server-standalone.plist
 
