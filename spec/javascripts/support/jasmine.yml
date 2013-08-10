@@ -13,6 +13,7 @@
 src_files:
     - public/javascripts/Player.js
     - public/javascripts/Song.js
+    - public/javascripts/*.js.coffee
 
 # stylesheets
 #
@@ -52,6 +53,7 @@ helpers:
 #
 spec_files:
   - '**/*[sS]pec.js'
+  - '**/*[sS]pec.js.coffee'
 
 # src_dir
 #

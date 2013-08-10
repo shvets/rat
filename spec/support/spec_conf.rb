@@ -175,7 +175,6 @@ class SpecConf
 
     selenium_config = AcceptanceTestsSupport.load_selenium_config selenium_config_file, selenium_config_name
 
-    support = AcceptanceTestsSupport.new Rails.root, selenium_config
+    AcceptanceTestsSupport.new Rails.root, selenium_config
   end
-
 end
