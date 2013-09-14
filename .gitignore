@@ -23,3 +23,5 @@ vendored_cookbooks
 /log/*.log
 /tmp
 tmp
+node_modules
+coverage
