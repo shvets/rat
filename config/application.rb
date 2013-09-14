@@ -29,13 +29,11 @@ module RailsDemo
     config.assets.paths << "#{Rails.root}/public/assets"
 
     def config.database_configuration
-      result = super
+      orig_db_configurations = super
 
-      #orig_db_configurations = super
-      #
-      #processor = ShadowDbCredentials.new(ENV['CREDENTIALS_DIR'])
-      #
-      #result = processor.process_configuration(orig_db_configurations, Rails.env)
+      processor = ShadowDbCredentials.new(ENV['CREDENTIALS_DIR'])
+
+      result = processor.process_configurations(orig_db_configurations)
 
       #Rails.logger.warn("1************** #{Rails.env}")
       #Rails.logger.warn(result[Rails.env])

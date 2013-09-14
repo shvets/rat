@@ -39,15 +39,11 @@ group :test do
   gem "factory_girl_rails"
   gem "mocha", :require => false
   gem "tiny-cms"
-  gem "jasmine"
-  gem "jasmine-headless-webkit"
-  gem 'cucumber-rails', :require => false
-  gem "rspec-example_steps"
 
   gem "spork"
 
-  gem "acceptance_tests_support"
-  gem "poltergeist" # brew install phantomjs
+  gem 'cucumber-rails', :require => false
+  gem "rspec-example_steps"
 
   gem "web_app_builder"
   gem 'fivemat'
@@ -64,7 +60,7 @@ end
 group :tools do
   gem "rake"
   gem "foreman"
-  gem "heroku"
+  #gem "heroku"
   gem "thor"
   gem "rubyzip"
   gem "script_executor"
@@ -97,24 +93,22 @@ group :debug do
 end
 
 group :acceptance_test do
+  gem "acceptance_test"
   gem "capybara", "2.1.0"
-  gem "capybara-firebug"
-  #gem "chromedriver-helper"
-  gem "sinatra"
 
-  if linux?
-    if File.exist? "/usr/local/Trolltech/Qt-4.8.4"
-      #gem "capybara-webkit", "0.14.2"
-    end
-  else
-    gem "capybara-webkit", "1.0.0"
-    # Note: You need to install qt:
-    # Mac: brew install qt
-    # Ubuntu: sudo apt-get install libqt4-dev libqtwebkit-dev
-    # Debian: sudo apt-get install libqt4-dev
-    # Fedora: yum install qt-webkit-devell
-    gem "launchy"
-  end
+  gem "capybara-webkit", "1.0.0"
+  #gem 'capybara-webkit', github: 'thoughtbot/capybara-webkit', branch: 'master'
+
+  # Note: You need to install qt:
+  # Mac: brew install qt
+  # Ubuntu: sudo apt-get install libqt4-dev libqtwebkit-dev
+  # Debian: sudo apt-get install libqt4-dev
+  # Fedora: yum install qt-webkit-devell
+
+  #gem "capybara-firebug"
+  gem "poltergeist" # brew install phantomjs
+
+  gem "selenium-webdriver"
 end
 
 group :test_tools do

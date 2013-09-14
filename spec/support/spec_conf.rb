@@ -168,13 +168,10 @@ class SpecConf
   def self.init_features_spec
     init_core_spec
 
-    require 'acceptance_tests_support'
+    #ENV['DRIVER'] = 'selenium'
 
-    selenium_config_file = "#{File.expand_path(Rails.root)}/spec/features/support/selenium.yml"
-    selenium_config_name = ENV['SELENIUM_CONFIG_NAME'].nil? ? "test.remote" : ENV['SELENIUM_CONFIG_NAME']
+    require 'rspec/rails'
 
-    selenium_config = AcceptanceTestsSupport.load_selenium_config selenium_config_file, selenium_config_name
-
-    AcceptanceTestsSupport.new Rails.root, selenium_config
+    require "#{Rails.root}/spec/features/support/my_acceptance_shared_context"
   end
 end

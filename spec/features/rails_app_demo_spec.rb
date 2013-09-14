@@ -1,14 +1,14 @@
 require File.expand_path(File.dirname(__FILE__) + '/support/features_spec_helper')
 
-feature 'Rails App Demo', %q{
+describe 'Rails App Demo', %q{
     As a user of this service
     I want to play with demo app
     So that I can understand how it works
   } do
 
-  include_context "AcceptanceTest", @@support
+  include_context "MyAcceptanceTest"
 
-  scenario "creates new post", driver: :selenium do
+  it "creates new post", driver: :selenium do
     visit('/')
 
     expect(page).to have_content 'Hello, Rails!'

@@ -33,7 +33,7 @@ staging:
   password: root
 
 production:
-  adapter: oracle_enhanced
+  adapter: postgresql
   credentials: rails_app_tmpl
 
 <% else %>

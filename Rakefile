@@ -12,21 +12,8 @@ task :"chef:example" do
   `chef-solo -c config/solo.rb -j config/vagrant-node.json`
 end
 
-begin
-  require 'jasmine'
-  load 'jasmine/tasks/jasmine.rake'
-rescue LoadError
-  task :jasmine do
-    abort "Jasmine is not available. In order to run jasmine, you must: (sudo) gem install jasmine"
-  end
+task :fix_debug do
+  system "mkdir -p $GEM_HOME/gems/debugger-ruby_core_source-1.2.3/lib"
+  system "cp -R ~/debugger-ruby_core_source/lib $GEM_HOME/gems/debugger-ruby_core_source-1.2.3"
 end
-
-require 'jasmine-headless-webkit'
-
-Jasmine::Headless::Task.new('jasmine:spec') do |t|
-  t.colors = true
-  t.keep_on_error = true
-  #t.jasmine_config = 'this/is/the/path.yml'
-end
-
 
