@@ -24,6 +24,7 @@ module RailsDemo
 
     # Custom directories with classes and modules you want to be autoloadable.
     config.autoload_paths += %W(#{config.root}/view_classes)
+    config.autoload_paths << "#{config.root}/app/api"
 
     config.assets.paths << "#{Rails.root}/public/javascripts"
     config.assets.paths << "#{Rails.root}/public/assets"

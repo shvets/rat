@@ -137,6 +137,12 @@ class SpecConf
     end
   end
 
+  def self.init_api_spec
+    init_spec
+
+    require "#{Rails.root}/spec/support/api_shared_context"
+  end
+
   def self.init_controllers_spec
     require 'factory_girl_rails'
     require "#{Rails.root}/spec/support/controller_spec_shared_context"

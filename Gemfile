@@ -16,7 +16,9 @@ group :default do
   gem "zip_dsl"
 
   gem "pg", '0.13.2'
-  gem 'mysql', "2.8.1"
+  #gem 'mysql', "2.8.1"
+
+  gem 'grape'
 end
 
 group :assets do
@@ -47,6 +49,7 @@ group :test do
 
   gem "web_app_builder"
   gem 'fivemat'
+  gem 'rack-test'
 
   #gem "guard"
   #gem "guard-rspec"
@@ -87,10 +90,10 @@ group :provision do
   #gem "berkshelf"
 end
 
-group :debug do
-  gem "ruby-debug-base19x", "0.11.30.pre12"
-  gem "ruby-debug-ide", "0.4.17"
-end
+#group :debug do
+#  gem "ruby-debug-base19x", "0.11.30.pre12"
+#  gem "ruby-debug-ide", "0.4.17"
+#end
 
 group :acceptance_test do
   gem "acceptance_test"
@@ -122,6 +125,11 @@ group :test_tools do
   #gem "pry", "0.9.8.2"
 end
 
+group :coverage do
+  gem 'simplecov', :require => false
+  gem 'simplecov-html', :require => false
+end
+
 group :presentation do
   gem "rmagick"
   gem "pdf-inspector"
@@ -131,6 +139,9 @@ group :presentation do
   # git clone git://github.com/masterkain/ImageMagick-sl.git
   # cd ImageMagick-sl
   # sh install_im.sh
+
+  #  # brew update
+  #  # brew install imagemagick
 
   gem "parade"
   #gem "parade-liveruby"
